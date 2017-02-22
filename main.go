@@ -1,15 +1,32 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"time"
 
 	"github.com/pkg/profile"
 )
 
 func main() {
-	defer profile.Start(profile.MemProfile).Stop()
+	defer profile.Start().Stop()
+	port := flag.String("port", "8000", "Server port")
+	flag.Parse()
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		food := selectFoods()
+		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+		w.WriteHeader(200)
+		w.Write([]byte(food))
+	})
+
+	// Starts the web server
+	http.ListenAndServe(":"+*port, nil)
+}
+
+func selectFoods() string {
 	food := []string{
 		"Salad",
 		"chips",
@@ -33,8 +50,7 @@ func main() {
 		yourfood = append(yourfood, <-feedme)
 		c++
 		if len(yourfood) > 2 {
-			fmt.Println("You have %s", yourfood)
-			break
+			return fmt.Sprintf("You have %s", yourfood)
 		}
 	}
 }
