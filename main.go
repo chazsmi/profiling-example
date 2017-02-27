@@ -5,14 +5,12 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	_ "net/http/pprof"
 	"time"
-
-	"github.com/pkg/profile"
 )
 
 func main() {
-	defer profile.Start().Stop()
-	port := flag.String("port", "8000", "Server port")
+	port := flag.String("port", "8080", "Server port")
 	flag.Parse()
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +48,7 @@ func selectFoods() string {
 		yourfood = append(yourfood, <-feedme)
 		c++
 		if len(yourfood) > 2 {
-			return fmt.Sprintf("You have %s", yourfood)
+			return fmt.Sprintf("You have %s\n", yourfood)
 		}
 	}
 }
